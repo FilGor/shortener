@@ -1,6 +1,7 @@
 package com.shortener.exceptions;
 
 import com.shortener.models.ApiError;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 
 import org.springframework.http.*;
@@ -15,10 +16,18 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiError> handleAll(UrlShortenerException ex) {
         HttpStatus status = switch (ex) {
             case UrlNotFoundException e     -> HttpStatus.NOT_FOUND;
-            case ValidationException e      -> HttpStatus.BAD_REQUEST;
+            case UrlValidationException e      -> HttpStatus.BAD_REQUEST;
             default                        -> HttpStatus.INTERNAL_SERVER_ERROR;
         };
         ApiError error = new ApiError(status, ex.getMessage());
         return new ResponseEntity<>(error, status);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiError> handleAll(Exception ex,
+                                              HttpServletRequest request) {
+        ApiError body = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR,
+                "Unexpected error");
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
     }
 }

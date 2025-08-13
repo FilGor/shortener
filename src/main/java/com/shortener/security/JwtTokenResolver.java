@@ -5,21 +5,22 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 @Component
-public class JwtTokenResolver {
-    private final JwtService jwtService;
+public class JwtTokenResolver implements TokenResolver {
+    private final TokenService tokenService;
     private final UserSecurityService userSec;
 
-    public JwtTokenResolver(JwtService jwtService, UserSecurityService userSec) {
-        this.jwtService = jwtService;
+    public JwtTokenResolver(TokenService tokenService, UserSecurityService userSec) {
+        this.tokenService = tokenService;
         this.userSec = userSec;
     }
 
+    @Override
     public UserDetails resolve(String header) {
         if (header == null || !header.startsWith("Bearer ")) return null;
         String token = header.substring(7);
-        String name  = jwtService.extractUserName(token);
+        String name  = tokenService.extractUserName(token);
         if (name == null) return null;
         var userDetails = userSec.loadUserByUsername(name);
-        return jwtService.isTokenValid(token, userDetails) ? userDetails : null;
+        return tokenService.isTokenValid(token, userDetails) ? userDetails : null;
     }
 }

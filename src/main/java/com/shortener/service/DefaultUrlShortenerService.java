@@ -2,6 +2,7 @@ package com.shortener.service;
 
 
 import com.shortener.exceptions.UrlNotFoundException;
+import com.shortener.exceptions.UrlValidationException;
 import com.shortener.models.ShortUrl;
 import com.shortener.models.builders.ShortUrlBuilder;
 import com.shortener.repositories.ShortUrlRepository;
@@ -32,7 +33,7 @@ public class DefaultUrlShortenerService implements UrlShortenerService {
     public ShortUrl shorten(String originalUrl) {
         String originalUrlTrimmed = originalUrl.trim();
         if (!urlValidator.isValid(originalUrl)) {
-            throw new IllegalArgumentException("Invalid URL: " + originalUrl); //TODO custom exceptions
+            throw new UrlValidationException("Invalid URL: " + originalUrl);
         }
 
         String hash = DigestUtils.md5Hex(originalUrlTrimmed);
