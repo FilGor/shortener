@@ -1,4 +1,4 @@
-package com.shortener.service;
+package com.shortener.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -17,10 +17,15 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    @Value("${token.secret.key}")
     String jwtSecretKey;
-    @Value("${token.expiration.ms}")
+
     Long jwtExpirationMs;
+
+    public JwtService(@Value("${token.secret.key}") String jwtSecretKey,
+                          @Value("${token.expiration.ms}") Long jwtExpirationMs) {
+        this.jwtSecretKey = jwtSecretKey;
+        this.jwtExpirationMs = jwtExpirationMs;
+    }
 
     public String extractUserName(String token) {
         return extractClaim(token, Claims::getSubject);

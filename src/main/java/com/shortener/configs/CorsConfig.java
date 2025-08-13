@@ -13,7 +13,7 @@ public class CorsConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         List<String> allowedOriginPatternsList =
-                Arrays.asList("http://localhost:4200",
+                Arrays.asList("http://localhost:4200",  // for future front-end
                         "http://localhost:4200/*",
                         "https://localhost:4200",
                         "https://localhost:4200/*");

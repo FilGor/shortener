@@ -1,13 +1,12 @@
-package com.shortener.service;
+package com.shortener.security;
 
 import com.shortener.models.*;
 import com.shortener.repositories.UserRepository;
+import com.shortener.service.UserCrudService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.time.Instant;
 
 @Service
 public class AuthenticationService {

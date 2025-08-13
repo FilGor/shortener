@@ -38,15 +38,17 @@ public class DefaultUrlShortenerService implements UrlShortenerService {
         String hash = DigestUtils.md5Hex(originalUrlTrimmed);
 
         return shortUrlRepository.findByOriginalHash(hash)
-                .orElseGet(() -> {
-                    ShortUrl shortUrl = new ShortUrlBuilder()
-                            .setShortCode(null)
-                            .setOriginalHash(hash)
-                            .setOriginalUrl(originalUrlTrimmed).createShortUrl();
-                    ShortUrl entity = shortUrlRepository.save(shortUrl);
-                    entity.setShortCode(urlShortenerEncoder.encode(entity.getId()));
-                    return shortUrlRepository.save(entity);
-                });
+                .orElseGet(() -> createShortUrl(hash, originalUrlTrimmed));
+    }
+
+    private ShortUrl createShortUrl(String hash, String originalUrlTrimmed) { //TODO consider factory
+        ShortUrl shortUrl = new ShortUrlBuilder()
+                .setShortCode(null)
+                .setOriginalHash(hash)
+                .setOriginalUrl(originalUrlTrimmed).createShortUrl();
+        ShortUrl entity = shortUrlRepository.save(shortUrl);
+        entity.setShortCode(urlShortenerEncoder.encode(entity.getId()));
+        return shortUrlRepository.save(entity);
     }
 
     @Override
