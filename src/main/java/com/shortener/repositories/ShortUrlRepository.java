@@ -13,6 +13,7 @@ import java.util.Optional;
 public interface ShortUrlRepository extends JpaRepository<ShortUrl, Long> {
     Optional<ShortUrl> findByShortCode(String shortCode);
     Optional<ShortUrl> findByOriginalHash(String originalHash);
+    //simple JPA call loading only ShortUrl fields (no owner access), so no N+1 select issue will occur.
     Page<ShortUrl> findAllByOwnerEmail(String ownerEmail, Pageable pageable);
     @Modifying
     @Query(

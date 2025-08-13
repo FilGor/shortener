@@ -34,7 +34,7 @@ public class ModelMapperConfig {
                 mapperConfig.using(toFullUrl)
                         .map(src -> src, ShortUrlDto::setShortenedUrl)
         );
-        
+
         TypeMap<ShortUrl, ShortUrlMetadataDto> metaMap =
                 mapper.createTypeMap(ShortUrl.class, ShortUrlMetadataDto.class);
         metaMap.addMappings(cfg -> {
