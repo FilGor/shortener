@@ -1,4 +1,4 @@
-package com.shortener.models;
+package com.shortener.models.dto;
 
 public class ShortUrlDto {
 

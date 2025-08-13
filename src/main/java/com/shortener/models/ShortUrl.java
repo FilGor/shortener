@@ -9,7 +9,7 @@ import jakarta.validation.constraints.Size;
         @Index(name = "idx_short_code", columnList = "shortCode", unique = true),
         @Index(name = "idx_original_hash", columnList = "originalHash")
 })
-public class ShortUrl {
+public class ShortUrl extends Auditable<String> {
 
 
     @Id
@@ -33,6 +33,9 @@ public class ShortUrl {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private ShortenerUser owner;
+
+    @Column(nullable = false)
+    private long visitCount = 0;
 
     public ShortUrl() {
     }
@@ -78,5 +81,13 @@ public class ShortUrl {
 
     public void setOwner(ShortenerUser owner) {
         this.owner = owner;
+    }
+
+    public long getVisitCount() {
+        return visitCount;
+    }
+
+    public void setVisitCount(long visitCount) {
+        this.visitCount = visitCount;
     }
 }

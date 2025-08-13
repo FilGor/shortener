@@ -1,4 +1,4 @@
-package com.shortener.models;
+package com.shortener.models.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

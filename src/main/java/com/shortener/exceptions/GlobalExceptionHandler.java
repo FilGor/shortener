@@ -4,6 +4,7 @@ import com.shortener.models.ApiError;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 
 import org.springframework.http.*;
@@ -16,6 +17,23 @@ import org.springframework.security.core.AuthenticationException;
 public class GlobalExceptionHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ApiError> handleValidationException(MethodArgumentNotValidException ex) {
+        var fieldErrors = ex.getBindingResult().getFieldErrors().stream()
+                .map(fe -> fe.getField() + ": " + fe.getDefaultMessage())
+                .toList();
+
+        String message = "Validation failed for %d field(s): %s".formatted(
+                fieldErrors.size(),
+                fieldErrors
+        );
+
+        logger.warn(message);
+        ApiError error = new ApiError(HttpStatus.BAD_REQUEST, message);
+        return ResponseEntity.badRequest().body(error);
+    }
+
 
     @ExceptionHandler({AuthenticationException.class})
     public ResponseEntity<ApiError> handleAuthException(AuthenticationException ex) {

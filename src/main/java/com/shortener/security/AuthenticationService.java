@@ -1,6 +1,8 @@
 package com.shortener.security;
 
 import com.shortener.models.*;
+import com.shortener.models.dto.SignInRequest;
+import com.shortener.models.dto.SignUpRequest;
 import com.shortener.repositories.UserRepository;
 import com.shortener.service.UserCrudService;
 import org.springframework.security.authentication.AuthenticationManager;

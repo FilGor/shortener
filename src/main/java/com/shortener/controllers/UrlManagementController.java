@@ -1,10 +1,10 @@
 package com.shortener.controllers;
 
 
-import com.shortener.configs.ModelMapperConfig;
 import com.shortener.models.ShortUrl;
-import com.shortener.models.ShortUrlDto;
-import com.shortener.models.ShortenRequest;
+import com.shortener.models.dto.ShortUrlDto;
+import com.shortener.models.dto.ShortUrlMetadataDto;
+import com.shortener.models.dto.ShortenRequest;
 import com.shortener.models.ShortenerUser;
 import com.shortener.service.UrlShortenerService;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -34,7 +34,7 @@ public class UrlManagementController {
         this.urlService = urlService;
         this.modelMapper = modelMapper;
     }
-    
+
     @PostMapping("/shorten")
     public ResponseEntity<ShortUrlDto> shortenUrl(@Valid @RequestBody ShortenRequest request,
                                                @AuthenticationPrincipal ShortenerUser currentUser) {
@@ -42,19 +42,26 @@ public class UrlManagementController {
         return new ResponseEntity<>(modelMapper.map(shortUrl,ShortUrlDto.class), HttpStatus.CREATED);
     }
 
-    @GetMapping
-    public ResponseEntity<Page<ShortUrlDto>> getUsersUrls( @ParameterObject
-                                                               @Parameter(
-                                                                       name        = "sort",
-                                                                       in          = ParameterIn.QUERY,
-                                                                       description = "Sorting criteria in the format: property,asc|desc. Multiple sort parameters are supported.",
-                                                                       schema      = @Schema(type = "string", example = "shortenedUrl,asc"),
-                                                                       style       = ParameterStyle.FORM,
-                                                                       explode     = Explode.FALSE
-                                                               )Pageable pageable, @AuthenticationPrincipal(expression="username") String email) {
-        Page<ShortUrl> urls = urlService.findAllByUrlsOwnerEmail(email,pageable);
-        return new ResponseEntity<>(urls.map(url -> modelMapper.map(url, ShortUrlDto.class)),HttpStatus.OK
+    @GetMapping("")
+    public ResponseEntity<Page<ShortUrlMetadataDto>> getUserUrlsMetadata(
+            @ParameterObject
+            @Parameter(
+                    name = "sort",
+                    in = ParameterIn.QUERY,
+                    description = "Sort criteria, e.g., property,asc or property,desc; multiple supported.",
+                    schema = @Schema(type = "string", example = "createdDate,desc"),
+                    style = ParameterStyle.FORM,
+                    explode = Explode.FALSE
+            )
+            Pageable pageable,
+            @AuthenticationPrincipal(expression = "username") String email
+    ) {
+        Page<ShortUrl> urls = urlService.findAllByUrlsOwnerEmail(email, pageable);
+        Page<ShortUrlMetadataDto> metadataDtos = urls.map(url ->
+                modelMapper.map(url, ShortUrlMetadataDto.class)
         );
+        return ResponseEntity.ok(metadataDtos);
     }
+
 
 }
