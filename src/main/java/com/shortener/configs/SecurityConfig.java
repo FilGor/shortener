@@ -15,12 +15,15 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfigurationSource;
+
+import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console;
 
 @Configuration
 public class SecurityConfig {
@@ -42,11 +45,13 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable) //TODO should be enabled if API is used by an frontend
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, "/api/auth/signup", "/api/auth/signin").permitAll()
-                                .requestMatchers(HttpMethod.GET,
+                        .requestMatchers(HttpMethod.POST,
+                                "/api/auth/signup",
+                                "/api/auth/signin").permitAll()
+                        .requestMatchers(toH2Console()).permitAll() //TODO should be only available on 'dev' profile
+                        .requestMatchers(HttpMethod.GET,
                                         "/swagger-ui.html",
                                         "/swagger-ui/**",
-                                        "/h2/**", // Would be nice to be available on 'dev' profile only
                                         "/v3/api-docs/**",
                                         "/v3/api-docs.yaml",
                                         "/error",
@@ -56,6 +61,10 @@ public class SecurityConfig {
 
                         .anyRequest().authenticated()
                 )
+                .headers(headers -> headers
+                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin
+                        )
+                ) // just for h2
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(restAuthEntryPoint())
 

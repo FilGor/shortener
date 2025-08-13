@@ -30,6 +30,10 @@ public class ShortUrl {
     @Column(nullable = false, length = 2048)
     private String originalUrl;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    private ShortenerUser owner;
+
     public ShortUrl() {
     }
 

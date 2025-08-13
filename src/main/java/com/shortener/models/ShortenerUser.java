@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -22,9 +23,17 @@ public class ShortenerUser implements UserDetails {
 
     String password;
 
-
     @Enumerated(EnumType.STRING)
     ShortenerUserRole role;
+
+    @OneToMany(
+            mappedBy = "owner",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    private List<ShortUrl> urls = new ArrayList<>();
+
 
     public ShortenerUser(String name, String email, String password, ShortenerUserRole role) {
         this.name = name;
