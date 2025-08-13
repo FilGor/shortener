@@ -3,8 +3,8 @@ package com.shortener.configs;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shortener.filters.JwtAuthenticationFilter;
 import com.shortener.models.ApiError;
-import com.shortener.security.JwtTokenResolver;
 import com.shortener.security.TokenResolver;
+import com.shortener.service.UserSecurityService;
 import jakarta.servlet.DispatcherType;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.*;
@@ -12,14 +12,16 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfigurationSource;
 
@@ -55,8 +57,10 @@ public class SecurityConfig {
                                         "/v3/api-docs/**",
                                         "/v3/api-docs.yaml",
                                         "/error",
-                                        "/error/**"
-                                ).permitAll()
+                                        "/error/**",
+                                        "/*"
+                                )
+                        .permitAll()
                         .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
 
                         .anyRequest().authenticated()
@@ -88,12 +92,22 @@ public class SecurityConfig {
         };
     }
 
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
-    }
+
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
         return new JwtAuthenticationFilter(tokenResolver,restAuthEntryPoint());
+    }
+    @Bean
+    public AuthenticationManager authenticationManager(
+            HttpSecurity http,
+            UserSecurityService userSecurityService,
+            PasswordEncoder passwordEncoder
+    ) throws Exception {
+        AuthenticationManagerBuilder auth = http
+                .getSharedObject(AuthenticationManagerBuilder.class);
+        auth
+                .userDetailsService(userSecurityService)
+                .passwordEncoder(passwordEncoder);
+        return auth.build();
     }
 }

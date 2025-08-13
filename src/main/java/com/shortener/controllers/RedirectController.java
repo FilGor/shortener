@@ -1,29 +1,21 @@
 package com.shortener.controllers;
 
-
-import com.shortener.models.ShortUrl;
-import com.shortener.models.ShortenRequest;
 import com.shortener.service.UrlShortenerService;
-import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
-@RestController
-@RequestMapping("/api/urls")
-public class UrlController {
+@Controller
+public class RedirectController {
 
     private final UrlShortenerService urlShortener;
 
-    public UrlController(UrlShortenerService urlShortener) {
+    public RedirectController(UrlShortenerService urlShortener) {
         this.urlShortener = urlShortener;
     }
 
-    @PostMapping("/shorten")
-    public ResponseEntity<ShortUrl> shortenUrl(@Valid @RequestBody ShortenRequest request) {
-        ShortUrl shortUrl = urlShortener.shorten(request.getOriginalUrl());
-        return new ResponseEntity<>(shortUrl, HttpStatus.CREATED);
-    }
 
     @GetMapping("/{shortCode}")
     public ResponseEntity<Void> redirect(@PathVariable String shortCode) {
@@ -32,5 +24,4 @@ public class UrlController {
                 .header("Location", originalUrl)
                 .build();
     }
-
 }

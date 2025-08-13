@@ -110,4 +110,19 @@ public class ShortenerUser implements UserDetails {
         this.password = password;
     }
 
+    public ShortenerUserRole getRole() {
+        return role;
+    }
+
+    public void setRole(ShortenerUserRole role) {
+        this.role = role;
+    }
+
+    public List<ShortUrl> getUrls() {
+        return urls;
+    }
+
+    public void setUrls(List<ShortUrl> urls) {
+        this.urls = urls;
+    }
 }

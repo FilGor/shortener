@@ -17,7 +17,7 @@ public class ShortUrl {
     private Long id;
 
     @Size(max = 10)
-    @Column(nullable = false, unique = true, length = 10)
+    @Column(unique = true, length = 10)
     private String shortCode;
 
     @NotBlank
@@ -37,10 +37,11 @@ public class ShortUrl {
     public ShortUrl() {
     }
 
-    public ShortUrl(String shortCode, String originalHash, String originalUrl) {
+    public ShortUrl(String shortCode, String originalHash, String originalUrl, ShortenerUser owner) {
         this.shortCode = shortCode;
         this.originalHash = originalHash;
         this.originalUrl = originalUrl;
+        this.owner = owner;
     }
 
     public Long getId() {
@@ -69,5 +70,13 @@ public class ShortUrl {
 
     public void setOriginalHash(String originalHash) {
         this.originalHash = originalHash;
+    }
+
+    public ShortenerUser getOwner() {
+        return owner;
+    }
+
+    public void setOwner(ShortenerUser owner) {
+        this.owner = owner;
     }
 }

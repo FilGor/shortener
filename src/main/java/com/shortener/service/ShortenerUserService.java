@@ -1,14 +1,15 @@
 package com.shortener.service;
 
 
-import com.shortener.exceptions.UserNotFoundException;
 import com.shortener.models.ShortenerUser;
 import com.shortener.repositories.UserRepository;
+import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -32,12 +33,12 @@ public class ShortenerUserService implements UserCrudService, UserSecurityServic
     @Override
     public ShortenerUser findByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException(email));
+                .orElseThrow(() -> new UsernameNotFoundException(email));
     }
 
     @Override
     public Page<ShortenerUser> getAllUsers(Pageable pageable) {
-        return null;
+        throw new NotImplementedException();
     }
 
     @Override
