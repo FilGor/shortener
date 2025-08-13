@@ -19,18 +19,26 @@ By default the app uses admin/changeme for the database credentials
 
 H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:shortener'
 
-
-
-Open Swagger UI (API documentation with endpoint descriptions) at:
+Open Swagger UI (API documentation with endpoints and testing environment) at:
 
 `http://localhost:8080/swagger-ui/index.html`
-
 
 Note: Before testing secured endpoints, you need to sign in via the /api/auth/signin endpoint using your email and password.
 
 You will receive a JWT token in the response. Click the Authorize button in the top right corner of the Swagger UI, paste the token into the value field, and then you can execute the protected requests.
 
 
+`POST /api/urls/shorten` – Creates a shortened URL from a given original URL.
+
+`GET /api/urls` – Retrieves the current user’s shortened URLs with their details.
+
+`POST /api/auth/signup `– Registers a new user account.
+
+`POST /api/auth/signin` – Logs in a user and returns an authentication token.
+
+
 ## Potential Improvements
 
 CQRS (Command Query Responsibility Segregation) could be applied if there is a sufficiently high number of queries and commands to justify independent scaling of reads and writes. This could be achieved by using two microservices, each with its own database, and synchronizing them (for example, via Kafka).
+
+Also more loggin should be added.
