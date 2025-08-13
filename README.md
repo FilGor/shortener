@@ -17,6 +17,10 @@ Run the container on port 8080:
 
 By default the app uses admin/changeme for the database credentials
 
+H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:shortener'
+
+
+
 Open Swagger UI (API documentation with endpoint descriptions) at:
 
 `http://localhost:8080/swagger-ui/index.html`
