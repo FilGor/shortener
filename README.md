@@ -42,3 +42,5 @@ You will receive a JWT token in the response. Click the Authorize button in the 
 CQRS (Command Query Responsibility Segregation) could be applied if there is a sufficiently high number of queries and commands to justify independent scaling of reads and writes. This could be achieved by using two microservices, each with its own database, and synchronizing them (for example, via Kafka).
 
 Also more loggin should be added.
+
+Only authentication has been added; method-level authorization has not been implemented.
